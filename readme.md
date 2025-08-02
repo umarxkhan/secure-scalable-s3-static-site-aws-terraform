@@ -6,7 +6,7 @@ This Terraform project configures a CloudFront distribution and ACM certificate 
 
 ## Folder Structure
 
-\```plaintext
+```plaintext
 secure-scalable-s3-static-site-aws-terraform/
 ├── main.tf                  # Root Terraform config referencing modules and data sources
 ├── variables.tf             # Variables definitions used in root module
@@ -23,7 +23,7 @@ secure-scalable-s3-static-site-aws-terraform/
 │       └── outputs.tf
 └── scripts/
 └── deploy.ps1           # PowerShell deploy script for Terraform
-\```plaintext
+```plaintext
 ---
 
 ## Overview
