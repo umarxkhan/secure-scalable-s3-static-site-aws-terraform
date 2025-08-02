@@ -23,7 +23,7 @@ secure-scalable-s3-static-site-aws-terraform/
 │       └── outputs.tf
 └── scripts/
 └── deploy.ps1           # PowerShell deploy script for Terraform
-```plaintext
+```
 ---
 
 ## Overview
