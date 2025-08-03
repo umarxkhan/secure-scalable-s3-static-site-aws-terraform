@@ -1,6 +1,7 @@
 # Secure and Scalable S3 Static Website with CloudFront, ACM, and Lambda Contact API
 
 This Terraform project provisions a secure and scalable infrastructure on AWS to host a static website on Amazon S3 (pre-existing), delivered globally via Amazon CloudFront CDN for low latency and high availability. The site is secured with HTTPS using an AWS Certificate Manager (ACM) SSL/TLS certificate. To facilitate user interaction, this project deploys a backend AWS Lambda function (app.py), packaged and stored in a dedicated S3 bucket that is provisioned alongside other resources via Terraform. This Lambda function is exposed through Amazon API Gateway, providing a secure and scalable API endpoint for the contact form. Additionally, Origin Access Control (OAC) is implemented to restrict direct public access to the static website’s S3 bucket, ensuring that all requests are served exclusively through CloudFront. The entire infrastructure is designed with modular Terraform configurations to enable streamlined, repeatable, and maintainable deployments.
+  
 ---
 
 ## 📁 Folder Structure
