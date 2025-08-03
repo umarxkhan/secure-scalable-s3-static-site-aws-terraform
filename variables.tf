@@ -8,16 +8,6 @@ variable "domain_name" {
   type        = string
 }
 
-/* variable "acm_certificate_arn" {
-  description = "ACM cert ARN (must be in us-east-1)"
-  type        = string
-} */
-
-/* variable "lambda_image_uri" {
-  description = "ECR image URI for Lambda"
-  type        = string
-} */
-
 variable "environment" {
   description = "Environment (dev, prod)"
   type        = string
@@ -41,4 +31,15 @@ variable "s3_website_endpoint" {
   type        = string
   default     = "mubarak.khan.cloud1.engineer.s3-website-us-east-1.amazonaws.com"
 }
+
+variable "lambda_zip_key" {
+  description = "The S3 key (path) for the Lambda zip file"
+  type        = string
+}
+
+variable "lambda_zip_path" {
+  description = "Local path to the Lambda zip file"
+  type        = string
+}
+
 

@@ -1,80 +1,121 @@
-# Secure and Scalable S3 Static Website with CloudFront and ACM
+# Secure and Scalable S3 Static Website with CloudFront, ACM, and Lambda Contact API
 
-This Terraform project configures a CloudFront distribution and ACM certificate for an **existing S3 bucket** hosting a static website.
-
+This Terraform project provisions a secure and scalable infrastructure on AWS to host a static website on Amazon S3 (pre-existing), delivered globally via Amazon CloudFront CDN for low latency and high availability. The site is secured with HTTPS using an AWS Certificate Manager (ACM) SSL/TLS certificate. To facilitate user interaction, this project deploys a backend AWS Lambda function (app.py), packaged and stored in a dedicated S3 bucket that is provisioned alongside other resources via Terraform. This Lambda function is exposed through Amazon API Gateway, providing a secure and scalable API endpoint for the contact form. Additionally, Origin Access Control (OAC) is implemented to restrict direct public access to the static website’s S3 bucket, ensuring that all requests are served exclusively through CloudFront. The entire infrastructure is designed with modular Terraform configurations to enable streamlined, repeatable, and maintainable deployments.
 ---
 
-## Folder Structure
+## 📁 Folder Structure
 
 ```plaintext
 secure-scalable-s3-static-site-aws-terraform/
-├── main.tf                  # Root Terraform config referencing modules and data sources
-├── variables.tf             # Variables definitions used in root module
-├── outputs.tf               # Outputs from the root module
-├── terraform.tfvars         # Your variable values (DON'T commit secrets here!)
+├── main.tf                   # Root Terraform config referencing modules
+├── variables.tf              # Root variable definitions
+├── outputs.tf                # Outputs from the root module
+├── terraform.tfvars          # Variable values (DO NOT commit secrets)
 ├── modules/
-│   ├── cloudfront-acm/      # CloudFront + ACM module
-│   │   ├── main.tf          # Module’s Terraform config
-│   │   ├── variables.tf     # Module variables
-│   │   └── outputs.tf       # Module outputs
-│   └── lambda-api-contact-form/ # Lambda API module for contact form (optional)
+│   ├── cloudfront-acm/       # CloudFront + ACM module
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   └── lambda-api-contact-form/     # Lambda API module for contact form
 │       ├── main.tf
 │       ├── variables.tf
-│       └── outputs.tf
-└── scripts/
-└── deploy.ps1           # PowerShell deploy script for Terraform
+│       ├── outputs.tf
+│       └── lambda-contact-form-code/
+│           ├── app.py        # Lambda handler
+│           └── app.zip       # Zipped Lambda package
+├── scripts/
+│   ├── deploy.ps1            # Script to deploy infrastructure and upload Lambda ZIP 
+│
+└── .gitignore                # Excludes .tfvars, .zip, etc.
+```
+
+---
+
+## ✅ Features
+
+* **S3-hosted static site** behind **CloudFront** for performance and security
+* **ACM certificate** (in us-east-1) for HTTPS support
+* **Origin Access Control (OAC)** to restrict direct access to S3
+* **Modular Terraform** code for clean separation
+* **Lambda + API Gateway** for contact form integration
+* **Lambda deployed as ZIP archive** stored in S3
+* **one-step deployment** to simplify lifecycle and avoid dependency issues
+
+---
+
+## 🚀 Deployment Steps
+
+> 🔒 AWS credentials must be configured in your shell environment.
+
+### Deploy Infrastructure
+
+This provisions CloudFront, S3 bucket (if not already created), API Gateway, and the initial Lambda function with a placeholder or uploaded ZIP.
+
+```powershell
+cd scripts
+.\deploy.ps1
 ```
 ---
 
-## Overview
+## 🧠 Prerequisites
 
-- Uses a **pre-created S3 bucket** (outside this project) as the website origin
-- Sets up **CloudFront distribution** to serve content securely and efficiently
-- Configures **Origin Access Identity (OAI)** so only CloudFront can access the S3 bucket
-- Applies bucket policy to allow CloudFront read access
-- Supports optional ACM certificate for HTTPS (currently uses default CloudFront cert)
-- Modular Terraform code for easy reuse and maintenance
+* Terraform installed and configured
+* PowerShell (for running deploy scripts on Windows)
+* Valid AWS credentials with permissions for S3, Lambda, ACM, CloudFront, and API Gateway
+* Your Lambda ZIP (`app.zip`) in `modules/lambda-api-contact-form/lambda-contact-form-code/`
 
 ---
 
-## Prerequisites
+## 📝 Configuration Notes
 
-- You must have an existing **S3 bucket** hosting your static website content.
-- The bucket should be **private** or accessible only through CloudFront OAI.
-- You should know the bucket name and website endpoint (e.g., `bucket-name.s3-website-us-east-1.amazonaws.com`).
-
----
-
-## Usage
-
-1. Update `terraform.tfvars` with your existing bucket name and other parameters.
-
-2. Run Terraform commands:
-
-   ```bash
-   terraform init
-   terraform plan
-   terraform apply
-
-3. After deployment, your website will be accessible via the CloudFront domain provided in the outputs.
+* **S3 bucket** is **created automatically** and made private
+* **Lambda ZIP** is uploaded to a secure S3 bucket and referenced in the Lambda function
+* **CORS** is configured for API Gateway (can be modified via variables)
+* **DNS** (e.g., Route 53) can be added separately to map a custom domain to the CloudFront URL
 
 ---
 
-## Notes
+## ✏️ Variables You Must Provide (`terraform.tfvars`)
 
-* This project **does NOT create or manage the S3 bucket** itself.
-* It assumes the bucket already contains your static website files.
-* Ensure the bucket policy allows access for the CloudFront OAI (this is managed by this Terraform project).
-* Adjust your DNS records to point your domain to the CloudFront distribution if needed.
+```hcl
+region = "us-east-1"
+domain_name = "yourdomain.com"
+hosted_zone_id = "ZXXXXXXXXXXX"     # Optional, if using Route53
+certificate_arn = "arn:aws:acm:us-east-1:XXXXXXXXXXXX:certificate/abcd-1234"
+lambda_code_bucket = "your-existing-or-created-bucket"
+lambda_zip_path = "modules/lambda-api-contact-form/lambda-contact-form-code/app.zip"
+```
 
 ---
 
-## License
+## 🛡️ Security Considerations
+
+* S3 bucket is **not public**; access is granted only to CloudFront
+* Contact form Lambda API is exposed only to defined CORS origins
+* IAM roles follow **least privilege** with custom managed policies
+
+---
+
+## 🧼 Cleanup
+
+```bash
+terraform destroy
+```
+
+Will remove all created AWS resources. Make sure your Lambda ZIP and website data are backed up externally if needed.
+
+---
+
+## 👤 Author
+
+Mubarak Ahmad Khan
+
+---
+
+## 📜 License
 
 This project is provided as-is with no warranties. Use at your own risk.
 
+```
+
 ---
-
-## Author
-
-Mubarak Ahmad Khan
