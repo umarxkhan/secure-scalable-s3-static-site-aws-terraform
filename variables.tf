@@ -42,4 +42,8 @@ variable "lambda_zip_path" {
   type        = string
 }
 
+variable "notification_email" {
+  description = "Email address to receive contact form submissions"
+  type        = string
+}
 

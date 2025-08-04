@@ -50,6 +50,7 @@ module "lambda_api_contact_form" {
   environment_variables = {
     SENDER_EMAIL   = "form@${var.domain_name}"
     DYNAMODB_TABLE = module.dynamodb.table_name
+    SNS_TOPIC_ARN  = module.sns_notifications.sns_topic_arn
   }
 }
 
@@ -70,3 +71,7 @@ resource "aws_s3_bucket_policy" "allow_cloudfront" {
   })
 }
 
+module "sns_notifications" {
+  source             = "./modules/sns-email"
+  notification_email = var.notification_email
+}

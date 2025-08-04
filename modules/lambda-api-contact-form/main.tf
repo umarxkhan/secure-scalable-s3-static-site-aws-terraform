@@ -54,7 +54,7 @@ resource "aws_iam_policy" "dynamodb_write" {
         Action = [
           "dynamodb:PutItem"
         ],
-        Resource = "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.dynamodb_table_name}"
+        Resource = "arn:aws:dynamodb:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:table/${var.dynamodb_table_name}"
       }
     ]
   })
@@ -64,6 +64,26 @@ resource "aws_iam_role_policy_attachment" "dynamodb_write_attach" {
   role       = aws_iam_role.lambda.name
   policy_arn = aws_iam_policy.dynamodb_write.arn
 }
+
+resource "aws_iam_policy" "sns_publish" {
+  name        = "${var.function_name}-sns-publish${var.environment}"
+  description = "Allow Lambda to publish to SNS"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["sns:Publish"],
+      Resource = var.environment_variables.SNS_TOPIC_ARN
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "sns_publish_attach" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = aws_iam_policy.sns_publish.arn
+}
+
 
 
 resource "aws_lambda_function" "this" {
