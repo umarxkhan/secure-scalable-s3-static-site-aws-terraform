@@ -155,7 +155,3 @@ Mubarak Ahmad Khan
 ## 📜 License
 
 This project is provided as-is with no warranties. Use at your own risk.
-
-```
-
----
