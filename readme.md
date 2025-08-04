@@ -10,6 +10,7 @@ Submitted messages are:
 * **Emailed** to a specified recipient via **Amazon SNS**
 
 Additionally, Origin Access Control (OAC) is implemented to restrict direct public access to the static website’s S3 bucket, ensuring that all requests are served exclusively through CloudFront. The entire infrastructure is designed with modular Terraform configurations to enable streamlined, repeatable, and maintainable deployments.
+
 ---
 
 ## 📁 Folder Structure
